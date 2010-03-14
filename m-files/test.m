@@ -16,7 +16,7 @@ n = 40;
 
 % build A and b according to the following methods
 %method=input('1->phillips,2->shaw,3->baart,4->deriv2,5->inv.lapl.trnsf. ');
-method = 1;
+method = 5;
 
 % Phillips
 if method==1
@@ -93,8 +93,8 @@ function [dp] = dp(x)
     global S;
     dp = 0;
     for j = 1:length(A)
-        dp = dp + bh(j)^2 * ((2*S(j,j)^2*x)/(S(j,j)^2 + x)^2 \
-                         - (2*S(j,j)^2*x^2)/(S(j,j)^2 +x)^3);
+        dp = dp + bh(j)^2 * ((2*x)/(S(j,j)^2 + x)^2 \
+                         - (2*x^2)/(S(j,j)^2 +x)^3);
     end
 end
 
@@ -109,19 +109,19 @@ hold on
 %plot([0,1],[normnoise^2,normnoise^2])
 
 % Newton's method to find the zero of p(x) - normnoise ^2
-x = .1;
+x = .0001;
 xprev = 0;
-while (abs(p(x)) > 1e-10) && (abs(xprev - x) > 1e-10)
+while (abs(p(x) - normnoise^2) > 1e-10) && (abs(xprev - x) > 1e-10)
     xprev = x;
     x = x - (p(x) - normnoise^2)/dp(x);
 end
 
 % using lambda, we can make our solution x using tikhonov
 lambda = x;
-xsol = A*(A'*A + lambda *eye(n))^-1 * A' *b;
+xsol = (A'*A + lambda *eye(n))^-1 * A' *b;
 
 % plot our final answers
 hold on
-plot(bexact,'b')
-plot(xsol);
-finalerror = norm(bexact - xsol)
+plot(exactsol,'b')
+plot(xsol,'r');
+finalerror = norm(exactsol - xsol)
