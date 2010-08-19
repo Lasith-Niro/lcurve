@@ -4,8 +4,7 @@ global A;
 global S;
 global bh;
 
-% clear everything
-clf;
+clear
 
 % random seeds
 seed = 1;
@@ -16,7 +15,8 @@ n = 40;
 
 % build A and b according to the following methods
 %method=input('1->phillips,2->shaw,3->baart,4->deriv2,5->inv.lapl.trnsf. ');
-method = 5;
+printf('1 - phillips\n2 - shaw \n3 - bart\n4 - deriv2\n5 - inverse laplace transformation\n')
+method = input("Method: ");
 
 % Phillips
 if method==1
@@ -37,7 +37,8 @@ elseif method==3
    condnumb=cond(A)
 % Deriv2
 elseif method==4
-   ex=input('1->sol=t, 2->sol=exp(t), 3->sol p.w. linear ');
+   printf('1 - t\n2 - exp(t)\n3 - piecewise linear\n');
+   ex = input("Method: ")
    [A,b,exactsol]=deriv2(n,ex); b=A*exactsol;
    % for ex=1 and ex=2 
    disp('matrix symmetric');
@@ -56,10 +57,13 @@ err = rand(length(b),1);
 err = err / norm(err);
 err = err * norm(b) * 10^(-eta);
 
+% clear everything
+clf;
+
 % remember the exact b signal
 bexact    = b;
 b         = b + err;
-normnoise = norm(err);
+normnoise = norm(err) *10;
 
 % SVD
 [U,S,V]=svd(A); 
@@ -79,14 +83,14 @@ function [p] = p(x)
     end
 end
 
-% preal function for getting the actual value using matrices. depricated
+% DEPRICATED: preal function for getting the actual value using matrices. 
 function [preal] = preal(x)
     global A
     global b
     preal = norm(A*(A'*A + x*eye(length(A)))^-1 * A'*b - b)^2;
 end
 
-% derived p'(x) function for Newton's Method... Pretty sure it works
+% p'(x) function for Newton's Method
 function [dp] = dp(x)
     global A
     global bh;
