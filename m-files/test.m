@@ -27,26 +27,30 @@ if method==1
    condnumb=cond(A)
 % Shaw
 elseif method==2
-   [A,b,exactsol]=shaw(n); b=A*exactsol;
+   [A,b,exactsol]=shaw(n); 
+   b=A*exactsol;
    disp('matrix symmetric');
    condnumb=cond(A)
 % Baart
 elseif method==3
-   [A,b,exactsol]=baart(n); b=A*exactsol;
+   [A,b,exactsol]=baart(n); 
+   b=A*exactsol;
    disp('matrix nonsymmetric');
    condnumb=cond(A)
 % Deriv2
 elseif method==4
    printf('1 - t\n2 - exp(t)\n3 - piecewise linear\n');
    ex = input("Method: ")
-   [A,b,exactsol]=deriv2(n,ex); b=A*exactsol;
+   [A,b,exactsol]=deriv2(n,ex); 
+   b=A*exactsol;
    % for ex=1 and ex=2 
    disp('matrix symmetric');
    condnumb=cond(A)
 % Inverse Laplace Transform
 else
    ex=input('1->sol=exp(-t/2), 2->sol=1-exp(-t/2), 3->t^2*exp(-t/2). 4->sol p.w.constant ');
-   [A,b,exactsol]=ilaplace(n,ex); b=A*exactsol;
+   [A,b,exactsol]=ilaplace(n,ex); 
+   b=A*exactsol;
    disp('matrix nonsymmetric');
    condnumb=cond(A)   
 end
@@ -69,8 +73,8 @@ normnoise = norm(err) *10;
 [U,S,V]=svd(A); 
 
 % for finding p(x) from Dr. Reichel's method for min(Ax-b)
-global bh;
 bh = U'*b;
+global bh;
 
 % p(x) function for efficiently finding solution norms min(Ax - b)
 function [p] = p(x)
@@ -96,18 +100,19 @@ function [dp] = dp(x)
     global bh;
     global S;
     dp = 0;
-    for j = 1:length(A)
+    for j = 1:40
         dp = dp + bh(j)^2 * ((2*x)/(S(j,j)^2 + x)^2 \
                          - (2*x^2)/(S(j,j)^2 +x)^3);
     end
+    printf("dp %d\n",dp)
 end
 
 hold on
 
 % we can plot p(x) and see where it intersects normnoise
-%for l = 0.01:.1:1
-%   plot(l,p(l),'o')
-%end
+for l = 0.01:.1:100
+   plot(l,p(l),'o')
+end
 
 % plot normnoise
 %plot([0,1],[normnoise^2,normnoise^2])
@@ -125,7 +130,7 @@ lambda = x;
 xsol = (A'*A + lambda *eye(n))^-1 * A' *b;
 
 % plot our final answers
-hold on
-plot(exactsol,'b')
-plot(xsol,'r');
-finalerror = norm(exactsol - xsol)
+%hold on
+%plot(exactsol,'b')
+%plot(xsol,'r');
+%finalerror = norm(exactsol - xsol)
